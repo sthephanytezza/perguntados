@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:perguntados/class/question.dart';
+import 'package:perguntados/ui/pages/final_page.dart';
 import 'package:perguntados/main.dart';
 
 import '../../data.dart';
 
 class QuestionPage extends StatefulWidget {
-  final Function() incrementPontos;
-
-  const QuestionPage({Key? key, required this.incrementPontos})
-      : super(key: key);
+  const QuestionPage({Key? key}) : super(key: key);
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -18,6 +16,7 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   int selectedQuestion = 0;
   bool checkQuestion = false;
+  int pontos = 0;
 
   late List<Question> questions;
 
@@ -28,11 +27,20 @@ class _QuestionPageState extends State<QuestionPage> {
     super.initState();
   }
 
+  void incrementPontos() {
+    setState(() {
+      pontos++;
+    });
+  }
+
+  int returnPontos() {
+    return pontos;
+  }
+
   void incrementQuestion() {
     setState(() {
       selectedQuestion++;
     });
-    debugPrint('questão selecionda: $selectedQuestion');
   }
 
   void updateCheckQuestion() {
@@ -54,11 +62,14 @@ class _QuestionPageState extends State<QuestionPage> {
           backgroundColor: primaryColor),
       body: SafeArea(
         child: ContainerQuestion(
-            question: questions[selectedQuestion],
-            checkQuestion: checkQuestion,
-            incrementQuestion: incrementQuestion,
-            updateCheckQuestion: updateCheckQuestion,
-            incrementPontos: widget.incrementPontos),
+          question: questions[selectedQuestion],
+          checkQuestion: checkQuestion,
+          incrementQuestion: incrementQuestion,
+          updateCheckQuestion: updateCheckQuestion,
+          incrementPontos: incrementPontos,
+          selectedQuestion: selectedQuestion,
+          returnPontos: returnPontos,
+        ),
       ),
     );
   }
@@ -70,6 +81,8 @@ class ContainerQuestion extends StatefulWidget {
   final Function() incrementQuestion;
   final Function() updateCheckQuestion;
   final Function() incrementPontos;
+  final int selectedQuestion;
+  final Function() returnPontos;
 
   const ContainerQuestion({
     Key? key,
@@ -78,6 +91,8 @@ class ContainerQuestion extends StatefulWidget {
     required this.incrementQuestion,
     required this.updateCheckQuestion,
     required this.incrementPontos,
+    required this.selectedQuestion,
+    required this.returnPontos,
   }) : super(key: key);
 
   @override
@@ -259,7 +274,8 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
     });
   }
 
-  void computeQuestion(bool checkQuestion, int _selected, int correct) {
+  void computeQuestion(
+      bool checkQuestion, int _selected, int correct, int selectedQuestion) {
     if (_selected > -1 && checkQuestion) {
       widget.updateCheckQuestion();
       textButton = 'Responder';
@@ -267,7 +283,17 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
         widget.incrementPontos();
       }
       changeIndex(-1);
-      widget.incrementQuestion();
+
+      if (selectedQuestion < 9) {
+        widget.incrementQuestion();
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => const FinalPage(),
+          settings: RouteSettings(
+            arguments: widget.returnPontos(),
+          ),
+        ));
+      }
     } else {
       widget.updateCheckQuestion();
       textButton = 'Próxima pergunta';
@@ -301,7 +327,11 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () => computeQuestion(
-                widget.checkQuestion, _selected, widget.question.correct),
+              widget.checkQuestion,
+              _selected,
+              widget.question.correct,
+              widget.selectedQuestion,
+            ),
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFF758cff),
               onPrimary: Colors.white,

@@ -48,6 +48,8 @@ class _ContainerFinalState extends State<ContainerFinal> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+
     return Container(
       height: 200,
       margin: const EdgeInsets.all(24.0),
@@ -88,7 +90,7 @@ class _ContainerFinalState extends State<ContainerFinal> {
           ),
           Center(
               child: Text(
-            '$_pontos/10 Acertos',
+            '$arguments/10 Acertos',
             style: const TextStyle(
               fontSize: 28,
             ),

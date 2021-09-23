@@ -10,13 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int pontos = 0;
-
-  void incrementPontos() {
-    pontos++;
-    debugPrint('pontos: $pontos');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +25,8 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ContainerHome(incrementPontos: incrementPontos),
+          children: const [
+            ContainerHome(),
           ],
         ),
       ),
@@ -42,11 +35,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ContainerHome extends StatelessWidget {
-  final Function() incrementPontos;
-
   const ContainerHome({
     Key? key,
-    required this.incrementPontos,
   }) : super(key: key);
 
   @override
@@ -91,8 +81,8 @@ class ContainerHome extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) =>
-                    QuestionPage(incrementPontos: incrementPontos))),
+              builder: (_) => const QuestionPage(),
+            )),
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFF758cff),
               onPrimary: Colors.white,
