@@ -1,9 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FinalPage extends StatelessWidget {
+import 'package:perguntados/ui/pages/home_page.dart';
+
+class FinalPage extends StatefulWidget {
   const FinalPage({Key? key}) : super(key: key);
 
+  @override
+  State<FinalPage> createState() => _FinalPageState();
+}
+
+class _FinalPageState extends State<FinalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +45,6 @@ class ContainerFinal extends StatefulWidget {
 }
 
 class _ContainerFinalState extends State<ContainerFinal> {
-  int _pontos = 0;
-
-  void _incrementPontos() {
-    setState(() {
-      _pontos++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments;
@@ -98,18 +97,18 @@ class _ContainerFinalState extends State<ContainerFinal> {
           const SizedBox(height: 24),
           Center(
               child: GestureDetector(
-            child: const Text(
-              'Tentar novamente',
-              style: TextStyle(
-                  color: Color(0xFF758cff),
-                  fontWeight: FontWeight.w800,
-                  decoration: TextDecoration.underline),
-            ),
-            onTap: () {
-              _incrementPontos();
-              debugPrint('Apertou');
-            },
-          ))
+                  child: const Text(
+                    'Tentar novamente',
+                    style: TextStyle(
+                        color: Color(0xFF758cff),
+                        fontWeight: FontWeight.w800,
+                        decoration: TextDecoration.underline),
+                  ),
+                  onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const HomePage(),
+                        ),
+                      )))
         ],
       ),
     );
