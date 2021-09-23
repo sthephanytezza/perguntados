@@ -33,6 +33,12 @@ class _QuestionPageState extends State<QuestionPage> {
     });
   }
 
+  void updateCheckQuestion() {
+    setState(() {
+      checkQuestion = !checkQuestion;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +54,8 @@ class _QuestionPageState extends State<QuestionPage> {
         child: ContainerQuestion(
             question: questions[selectedQuestion],
             checkQuestion: checkQuestion,
-            incrementQuestion: incrementQuestion),
+            incrementQuestion: incrementQuestion,
+            updateCheckQuestion: updateCheckQuestion),
       ),
     );
   }
@@ -58,12 +65,14 @@ class ContainerQuestion extends StatefulWidget {
   final Question question;
   final bool checkQuestion;
   final Function() incrementQuestion;
+  final Function() updateCheckQuestion;
 
   const ContainerQuestion({
     Key? key,
     required this.question,
     required this.checkQuestion,
     required this.incrementQuestion,
+    required this.updateCheckQuestion,
   }) : super(key: key);
 
   @override
@@ -82,7 +91,7 @@ void changeColors(
     if (index == question.correct) {
       backgroundColor = const Color(0xFFe5ffe6);
       principal = const Color(0xFF47c94c);
-    } else {
+    } else if (selected) {
       backgroundColor = const Color(0xFFffd6d6);
       principal = const Color(0xFFfc5e5e);
     }
@@ -97,8 +106,10 @@ void changeColors(
   }
 }
 
-BoxDecoration containerDetails(
-    bool selected, int index, Question question, bool checkQuestion) {
+BoxDecoration containerDetails(bool selected, int chosen, int index,
+    Question question, bool checkQuestion) {
+  debugPrint('index: $index');
+
   if (checkQuestion) {
     if (index == question.correct) {
       return BoxDecoration(
@@ -108,32 +119,34 @@ BoxDecoration containerDetails(
             width: 1.8,
             color: green,
           ));
-    }
-    return BoxDecoration(
-        color: const Color(0xFFffd6d6),
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          width: 1.8,
-          color: red,
-        ));
-  } else {
-    if (selected) {
+    } else if (selected) {
       return BoxDecoration(
-          color: secondaryColor,
+          color: const Color(0xFFffd6d6),
           borderRadius: BorderRadius.circular(24.0),
           border: Border.all(
             width: 1.8,
-            color: primaryColor,
+            color: red,
           ));
     }
+  }
+
+  if (selected) {
     return BoxDecoration(
-        color: Colors.white,
+        color: secondaryColor,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
           width: 1.8,
-          color: const Color(0xFFf7f7f7),
+          color: primaryColor,
         ));
   }
+
+  return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(24.0),
+      border: Border.all(
+        width: 1.8,
+        color: const Color(0xFFf7f7f7),
+      ));
 }
 
 BoxDecoration containerCheckbox(
@@ -147,33 +160,33 @@ BoxDecoration containerCheckbox(
             color: green,
             width: 2.0,
           ));
-    }
-    return BoxDecoration(
-        color: red,
-        borderRadius: BorderRadius.circular(4.0),
-        border: Border.all(
-          color: red,
-          width: 2.0,
-        ));
-  } else {
-    if (selected) {
+    } else if (selected) {
       return BoxDecoration(
-          color: primaryColor,
+          color: red,
           borderRadius: BorderRadius.circular(4.0),
           border: Border.all(
-            color: borderColor,
+            color: red,
             width: 2.0,
           ));
     }
-
+  }
+  if (selected) {
     return BoxDecoration(
-        color: Colors.white,
+        color: primaryColor,
         borderRadius: BorderRadius.circular(4.0),
         border: Border.all(
           color: borderColor,
           width: 2.0,
         ));
   }
+
+  return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(4.0),
+      border: Border.all(
+        color: borderColor,
+        width: 2.0,
+      ));
 }
 
 Color colorText(
@@ -181,14 +194,14 @@ Color colorText(
   if (checkQuestion) {
     if (index == question.correct) {
       return green;
+    } else if (selected) {
+      return red;
     }
-    return red;
-  } else {
-    if (selected) {
-      return primaryColor;
-    }
-    return Colors.black;
   }
+  if (selected) {
+    return primaryColor;
+  }
+  return Colors.black;
 }
 
 Widget containerOption(int _selected, int index, Function() onTap,
@@ -199,8 +212,8 @@ Widget containerOption(int _selected, int index, Function() onTap,
       height: 80,
       margin: const EdgeInsets.fromLTRB(0.0, 3.0, 0.0, 4.0),
       padding: const EdgeInsets.all(20.0),
-      decoration:
-          containerDetails(_selected == index, index, question, checkQuestion),
+      decoration: containerDetails(
+          _selected == index, _selected, index, question, checkQuestion),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -242,6 +255,12 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
     });
   }
 
+  void computeQuestion(bool checkQuestion, int _selected, int correct) {
+    if (_selected > -1) {
+      widget.updateCheckQuestion();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -268,7 +287,8 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
               widget.checkQuestion),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () => debugPrint('pressionado'),
+            onPressed: () => computeQuestion(
+                widget.checkQuestion, _selected, widget.question.correct),
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFF758cff),
               onPrimary: Colors.white,
