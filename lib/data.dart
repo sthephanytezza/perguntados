@@ -1,12 +1,6 @@
 import 'class/question.dart';
 
 const List<Question> questionsData = [
-  Question('Qual o principal serviço da Usemobile?',
-      ['Jogos', 'Site', 'Aplicativos', 'Sistemas de gerenciamento'], 2),
-  Question('Qual o melhor time de Minas Gerais?',
-      ['Cruzeiro', 'Atlético', 'América', 'Uberlândia'], 0),
-  Question('Qual com quantos paus se faz uma canoa?',
-      ['1', '100', '50.000.000', 'Não sei'], 3),
   Question(
       'O chupa cabra faz o que?',
       [
@@ -16,6 +10,12 @@ const List<Question> questionsData = [
         'Chupa cabritos'
       ],
       2),
+  Question('Qual o principal serviço da Usemobile?',
+      ['Jogos', 'Site', 'Aplicativos', 'Sistemas de gerenciamento'], 2),
+  Question('Qual o melhor time de Minas Gerais?',
+      ['Cruzeiro', 'Atlético', 'América', 'Uberlândia'], 0),
+  Question('Qual com quantos paus se faz uma canoa?',
+      ['1', '100', '50.000.000', 'Não sei'], 3),
   Question('Qual é o pai da Ciência da Computação?',
       ['Alan Buring', 'Alan Turing', 'Alano Ing', 'Amadeu da Silva'], 1),
   Question(

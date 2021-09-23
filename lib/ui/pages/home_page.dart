@@ -14,6 +14,7 @@ class _HomePageState extends State<HomePage> {
 
   void incrementPontos() {
     pontos++;
+    debugPrint('pontos: $pontos');
   }
 
   @override

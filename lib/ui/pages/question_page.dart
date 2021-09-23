@@ -18,6 +18,7 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   int selectedQuestion = 0;
   bool checkQuestion = false;
+
   late List<Question> questions;
 
   @override
@@ -31,6 +32,7 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       selectedQuestion++;
     });
+    debugPrint('questão selecionda: $selectedQuestion');
   }
 
   void updateCheckQuestion() {
@@ -55,7 +57,8 @@ class _QuestionPageState extends State<QuestionPage> {
             question: questions[selectedQuestion],
             checkQuestion: checkQuestion,
             incrementQuestion: incrementQuestion,
-            updateCheckQuestion: updateCheckQuestion),
+            updateCheckQuestion: updateCheckQuestion,
+            incrementPontos: widget.incrementPontos),
       ),
     );
   }
@@ -66,6 +69,7 @@ class ContainerQuestion extends StatefulWidget {
   final bool checkQuestion;
   final Function() incrementQuestion;
   final Function() updateCheckQuestion;
+  final Function() incrementPontos;
 
   const ContainerQuestion({
     Key? key,
@@ -73,6 +77,7 @@ class ContainerQuestion extends StatefulWidget {
     required this.checkQuestion,
     required this.incrementQuestion,
     required this.updateCheckQuestion,
+    required this.incrementPontos,
   }) : super(key: key);
 
   @override
@@ -108,8 +113,6 @@ void changeColors(
 
 BoxDecoration containerDetails(bool selected, int chosen, int index,
     Question question, bool checkQuestion) {
-  debugPrint('index: $index');
-
   if (checkQuestion) {
     if (index == question.correct) {
       return BoxDecoration(
@@ -248,6 +251,7 @@ Widget containerOption(int _selected, int index, Function() onTap,
 
 class _ContainerQuestionState extends State<ContainerQuestion> {
   int _selected = -1;
+  String textButton = 'Responder';
 
   void changeIndex(int index) {
     setState(() {
@@ -256,8 +260,17 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
   }
 
   void computeQuestion(bool checkQuestion, int _selected, int correct) {
-    if (_selected > -1) {
+    if (_selected > -1 && checkQuestion) {
       widget.updateCheckQuestion();
+      textButton = 'Responder';
+      if (_selected == correct) {
+        widget.incrementPontos();
+      }
+      changeIndex(-1);
+      widget.incrementQuestion();
+    } else {
+      widget.updateCheckQuestion();
+      textButton = 'Próxima pergunta';
     }
   }
 
@@ -298,9 +311,9 @@ class _ContainerQuestionState extends State<ContainerQuestion> {
                 borderRadius: BorderRadius.circular(24.0),
               ),
             ),
-            child: const Text(
-              'Responder',
-              style: TextStyle(
+            child: Text(
+              textButton,
+              style: const TextStyle(
                 fontSize: 20,
               ),
             ),
