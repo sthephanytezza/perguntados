@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:perguntados/class/question.dart';
 import 'package:perguntados/ui/pages/final_page.dart';
+import 'package:perguntados/ui/pages/home_page.dart';
 import 'package:perguntados/main.dart';
 
 import '../../data.dart';
@@ -49,6 +50,18 @@ class _QuestionPageState extends State<QuestionPage> {
     });
   }
 
+  void returnPage() {
+    setState(() {
+      if (selectedQuestion > 0) {
+        selectedQuestion--;
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => const HomePage(),
+        ));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +72,10 @@ class _QuestionPageState extends State<QuestionPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new),
+            onPressed: returnPage,
+          ),
           backgroundColor: primaryColor),
       body: SafeArea(
         child: ContainerQuestion(
